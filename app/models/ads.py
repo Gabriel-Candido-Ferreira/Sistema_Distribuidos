@@ -1,6 +1,7 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator,ConfigDict
 from typing import Optional
-from datetime import datetime
+from bson import ObjectId
+from datetime import datetime, timezone
 from app.models.states import States
 from app.models.collection import Collection
 from app.models.user import User
@@ -8,7 +9,7 @@ from app.models.user import User
 
 class Ads(BaseModel):
     image: object
-    iduser: str
+    iduser: str 
     status: bool
     date_created: datetime
     title: str
@@ -18,6 +19,14 @@ class Ads(BaseModel):
     price_negotiable: bool
     views: int
     state: States
+
+    @classmethod
+    def from_mongo(cls, data):
+        """Converte os dados do MongoDB para um formato adequado ao Pydantic"""
+        if data and '_id' in data:
+            data['id'] = str(data['_id'])
+            del data['_id']
+        return cls(**data)
 
     @validator('title')
     def validate_title(cls, v):
@@ -45,6 +54,10 @@ class Ads(BaseModel):
 
     @validator('date_created')
     def validate_date_created(cls, v):
-        if v > datetime.now():
+        if v.tzinfo is None: 
+            v = v.replace(tzinfo=timezone.utc)
+        
+        if v > datetime.now(timezone.utc):
             raise ValueError('A data de criação não pode ser no futuro')
+        
         return v
