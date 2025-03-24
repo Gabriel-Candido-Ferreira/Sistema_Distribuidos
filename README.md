@@ -1,7 +1,4 @@
 # Sistema_Distribuidos
-Sistema_Distribuidos
-
-Aqui está uma versão aprimorada do seu README:  
 
 ---
 
