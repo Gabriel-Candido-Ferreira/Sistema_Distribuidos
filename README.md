@@ -4,7 +4,7 @@
 
 # 📌 Repositório de Estudos – Sistemas Distribuídos | IF Goiano  
 
-Bem-vindo(a) ao repositório de estudos da disciplina **Sistemas Distribuídos** do **IF Goiano**, ministrada pelo **Professor Dr. Alexandre**.  
+Bem-vindo(a) ao repositório de estudos da disciplina **Sistemas Distribuídos** do **[(IF Goiano)](https://ifgoiano.edu.br/home/)**, ministrada pelo **[(Professor Dr. Alexandre)](linkedin.com/in/alexandrecarvalhosilva)**.  
 
 ## 📖 Sobre o Repositório  
 Este espaço reúne materiais didáticos, códigos-fonte e experimentos práticos voltados ao estudo e desenvolvimento de **APIs** e **arquitetura de microserviços**. Nosso objetivo é proporcionar um ambiente colaborativo para aprofundamento dos conceitos e boas práticas em sistemas distribuídos.  
