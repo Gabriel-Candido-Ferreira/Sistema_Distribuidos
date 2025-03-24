@@ -12,10 +12,15 @@ Este espaço reúne materiais didáticos, códigos-fonte e experimentos prático
 ## 📂 Conteúdo  
 
 🔹 Conceitos fundamentais sobre APIs REST e SOAP
+
 🔹 Arquitetura de Microserviços e seus benefícios
+
 🔹 Implementação de autenticação e segurança (JWT, OAuth2, API Keys)
+
 🔹 Testes de APIs utilizando Postman e Swagger
+
 🔹 Monitoramento e escalabilidade
+
 🔹 Integração entre serviços e comunicação assíncrona
 
 ## 🚀 Tecnologias Utilizadas  
