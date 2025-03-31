@@ -5,6 +5,11 @@ class States(BaseModel):
 
     @validator('name')
     def validate_name(cls, v):
-        if len(v) < 2:
-            raise ValueError('O nome deve ter pelo menos 3 caracteres')
-        return v
+        valid_states = [
+            "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
+            "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI",
+            "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
+        ]
+        if v.upper() not in valid_states:
+            raise ValueError('Estado inválido')
+        return v.upper()
