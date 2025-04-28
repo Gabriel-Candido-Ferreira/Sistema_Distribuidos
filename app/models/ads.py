@@ -4,7 +4,6 @@ from bson import ObjectId
 from datetime import datetime, timezone
 from app.models.states import States
 from app.models.collection import Collection
-from app.models.user import User
 # from user import User
 
 class Ads(BaseModel):

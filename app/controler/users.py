@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.database import get_database
 from app.models.user import User
@@ -12,8 +12,13 @@ router = APIRouter()
 async def create_user(user: User, database: AsyncIOMotorDatabase = Depends(get_database)):
     user_dict = user.dict()
 
-    # Aplica o hash na senha
-    user_dict["password"] = hash_password(user_dict["password"])
+    if "passwordHash" not in user_dict:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Campo 'passwordHash' é obrigatório"
+        )
+
+    user_dict["passwordHash"] = hash_password(user_dict["passwordHash"])
 
     try:
         result = await database["users"].insert_one(user_dict)
@@ -26,18 +31,13 @@ async def create_user(user: User, database: AsyncIOMotorDatabase = Depends(get_d
 async def update_user(user_id: str, user: User, database: AsyncIOMotorDatabase = Depends(get_database)):
     user_dict = user.dict()
 
-    # Verifica se o estado existe
-    existing_state = await database["states"].find_one({"_id": ObjectId(user.state.id)})
-    if not existing_state:
-        raise HTTPException(status_code=400, detail="Estado informado não existe")
-
     # Verifica duplicidade de e-mail
     existing_user = await database["users"].find_one({"email": user.email, "_id": {"$ne": ObjectId(user_id)}})
     if existing_user:
         raise HTTPException(status_code=400, detail="E-mail já cadastrado para outro usuário")
 
     # Re-hash da senha
-    user_dict["password"] = hash_password(user_dict["password"])
+    user_dict["passwordHash"] = hash_password(user_dict["passwordHash"])
 
     result = await database["users"].update_one(
         {"_id": ObjectId(user_id)}, 
@@ -70,3 +70,17 @@ async def get_user(user_id: str, database: AsyncIOMotorDatabase = Depends(get_da
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar usuário: {str(e)}")
 
+@router.delete("/users/{user_id}", response_model=User)
+async def delete_user(user_id: str, database: AsyncIOMotorDatabase = Depends(get_database)):
+    try:
+        user = await database["users"].find_one({"_id": ObjectId(user_id)})
+        if user:
+            await database["users"].delete_one({"_id": ObjectId(user_id)})
+            user["_id"] = str(user["_id"])  
+            return user
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao deletar usuário: {str(e)}")
+    
+    

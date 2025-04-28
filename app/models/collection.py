@@ -9,3 +9,9 @@ class Collection(BaseModel):
         if len(v) < 3:
             raise ValueError('O nome deve ter pelo menos 3 caracteres')
         return v
+    
+    @validator('slug')
+    def validate_slug(cls, v):
+        if len(v) < 3:
+            raise ValueError('O nome deve ter pelo menos 3 caracteres')
+        return v

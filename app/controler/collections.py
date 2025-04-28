@@ -41,3 +41,15 @@ async def get_collections(database: AsyncIOMotorDatabase = Depends(get_database)
         return collections
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao buscar uma collection: {str(e)}")
+    
+@router.delete("/collection/{collection_id}", response_model=Collection)
+async def delete_collection(collection_id: str, database: AsyncIOMotorDatabase = Depends(get_database)):
+    try:
+        collection = await database["collections"].find_one({"_id": ObjectId(collection_id)})
+        if collection:
+            await database["collections"].delete_one({"_id": ObjectId(collection_id)})
+            collection["_id"] = str(collection["_id"])  
+            return collection
+        raise HTTPException(status_code=404, detail="collection não encontrado")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao deletar collection: {str(e)}")

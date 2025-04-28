@@ -41,3 +41,15 @@ async def update_ads(ads_id: str, ads: Ads, database: AsyncIOMotorDatabase = Dep
         return {"message": "Anuncio atualizado com sucesso"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao atualizar o Anuncio: {str(e)}")
+    
+@router.delete("/ads/{ads_id}", response_model=Ads)
+async def delete_ads(ads_id: str, database: AsyncIOMotorDatabase = Depends(get_database)):
+    try:
+        ads = await database["adss"].find_one({"_id": ObjectId(ads_id)})
+        if ads:
+            await database["adss"].delete_one({"_id": ObjectId(ads_id)})
+            ads["_id"] = str(ads["_id"])  
+            return ads
+        raise HTTPException(status_code=404, detail="ads não encontrado")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao deletar ads: {str(e)}")
